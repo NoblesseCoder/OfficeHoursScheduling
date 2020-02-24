@@ -14,17 +14,9 @@ public class Main {
         JFrame mainFrame = new JFrame("Office Hours Scheduling");
 
         // Implementing Queue using JTables
-        String[][] initQueueData = {
-                { "Kundan Kumar Jha", "4031" },
-                { "Anand Jha", "6014" }
-        };
-
         JTable queueTable = new JTable(new QueueTableModel());
         queueTable.setDefaultEditor(Object.class, null);
         queueTable.setBounds(50, 500, 900, 400);
-
-        JScrollPane scrollPane = new JScrollPane(queueTable);
-       // scrollPane.setViewportView(queueTable);
 
         // Add Button
         JButton addButton = new JButton("Add Yourself");
@@ -33,6 +25,7 @@ public class Main {
             String[] info = getInformation();
             if (info != null)
                 credentials.put(info[0],info[1]);
+                //queueTable.a
             System.out.println(Arrays.toString(info));
         });
 
@@ -66,15 +59,19 @@ public class Main {
             }
         });
 
-        mainFrame.add(queueTable);
+        //mainFrame.add(queueTable);
+        JScrollPane scrollPane = new JScrollPane(queueTable);
+        scrollPane.setLocation(100,100);
         mainFrame.add(scrollPane);
+        mainFrame.pack();
+        //mainFrame.add(scrollPane);
         mainFrame.add(addButton);
         mainFrame.add(removeButton);
         mainFrame.add(pauseButton);
         mainFrame.add(unPauseButton);
 
         mainFrame.setSize(1000, 1000);
-        mainFrame.setLayout(null);
+        //mainFrame.setLayout(null);
         mainFrame.setLocationRelativeTo(null);
         mainFrame.setVisible(true);
 
