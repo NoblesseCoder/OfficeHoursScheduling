@@ -9,7 +9,11 @@ public class QueueTableModel extends AbstractTableModel {
     List<Person> queueData = new ArrayList<Person>();
 
     public QueueTableModel(){
-        queueData.add(new Person("abc","abc@gmail.com"));
+        queueData.add(new Person("PersonA","person_a@gmail.com"));
+        queueData.add(new Person("PersonB","person_b@gmail.com"));
+        queueData.add(new Person("PersonC","person_c@gmail.com"));
+        queueData.add(new Person("PersonD","person_d@gmail.com"));
+        queueData.add(new Person("PersonE","person_e@gmail.com"));
     }
 
     @Override

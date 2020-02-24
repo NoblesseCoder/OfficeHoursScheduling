@@ -46,7 +46,9 @@ public class DisplayGui extends JFrame{
         removeButton.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                //tf.setText("Welcome to Javatpoint.");
+                /* TODO Implement handler for removing user based on the row
+                    selected in table.
+                 */
             }
         });
 
@@ -55,7 +57,9 @@ public class DisplayGui extends JFrame{
         pauseButton.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                //tf.setText("Welcome to Javatpoint.");
+                /* TODO Implement handler for pausing user based on the row
+                    selected in table.
+                 */
             }
         });
 
@@ -64,7 +68,9 @@ public class DisplayGui extends JFrame{
         unPauseButton.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                //tf.setText("Welcome to Javatpoint.");
+                /* TODO Implement handler for Un pausing user based on the row
+                    selected in table.
+                 */
             }
         });
 
