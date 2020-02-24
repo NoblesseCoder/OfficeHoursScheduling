@@ -1,9 +1,103 @@
 package com.company;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Arrays;
+import java.util.HashMap;
+
 public class Main {
+    private static JFrame mainFrame;
+    private static JTable queueTable;
+    private static HashMap<String,String> credentials = new HashMap<>();
 
     public static void main(String[] args) {
-	// write your code here
-    // Just Testing .gitgnore
+        mainFrame = new JFrame("Office Hours Scheduling");
+
+        // Implementing Queue using JTables
+        String[][] initQueueData = {
+                { "Kundan Kumar Jha", "4031" },
+                { "Anand Jha", "6014" }
+        };
+        String[] queueColumnNames = { "Name", "Roll Number"};
+        queueTable = new JTable(initQueueData,queueColumnNames);
+        queueTable.setDefaultEditor(Object.class, null);
+        queueTable.setBounds(50, 500, 800, 400);
+
+        JScrollPane scrollPane = new JScrollPane(queueTable);
+        scrollPane.setViewportView(queueTable);
+
+        // Add Button
+        JButton addButton = new JButton("Add Yourself");
+        addButton.setBounds(50,100,200,50);
+        addButton.addActionListener(actionEvent -> {
+            String[] info = getInformation();
+            assert info != null;
+            credentials.put(info[0],info[1]);
+            System.out.println(Arrays.toString(info));
+
+
+        });
+
+        // Remove Button
+        JButton removeButton = new JButton("Remove Yourself");
+        removeButton.setBounds(260,100,200,50);
+        removeButton.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                //tf.setText("Welcome to Javatpoint.");
+            }
+        });
+
+        // Pause Button
+        JButton pauseButton = new JButton("Pause Yourself");
+        pauseButton.setBounds(470,100,200,50);
+        pauseButton.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                //tf.setText("Welcome to Javatpoint.");
+            }
+        });
+
+        // Unpause button
+        JButton unPauseButton = new JButton("Unpause Yourself");
+        unPauseButton.setBounds(680,100,200,50);
+        unPauseButton.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                //tf.setText("Welcome to Javatpoint.");
+            }
+        });
+
+        //mainFrame.add(queueTable);
+        mainFrame.add(scrollPane);
+        mainFrame.add(addButton);
+        mainFrame.add(removeButton);
+        mainFrame.add(pauseButton);
+        mainFrame.add(unPauseButton);
+
+        mainFrame.setSize(1000, 1000);
+        mainFrame.setLayout(null);
+        mainFrame.setVisible(true);
+
+    }
+
+    public static String[] getInformation(){
+
+        JPanel pane = new JPanel();
+        pane.setLayout(new GridLayout(0, 2, 2, 2));
+        JTextField emailField = new JTextField(5);
+        JTextField sessionCode = new JTextField(5);
+        pane.add(new JLabel("Enter Email"));
+        pane.add(emailField);
+        pane.add(new JLabel("Enter Session code"));
+        pane.add(sessionCode);
+        int result = JOptionPane.showConfirmDialog(null, pane, "Enter credentials", JOptionPane.OK_CANCEL_OPTION);
+        if (result == JOptionPane.OK_OPTION) {
+            return new String[]{emailField.getText(), sessionCode.getText()};
+        }
+        return null;
     }
 }
+
