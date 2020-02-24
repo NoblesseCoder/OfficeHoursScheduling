@@ -2,7 +2,12 @@ package com.company;
 
 import javax.swing.table.AbstractTableModel;
 
-public class QueueTable extends AbstractTableModel {
+public class QueueTableModel extends AbstractTableModel {
+    String[] queueColumnNames = { "Index","Email", "Name"};
+
+    public QueueTableModel(){
+
+    }
 
     @Override
     public int getRowCount() {
@@ -15,8 +20,8 @@ public class QueueTable extends AbstractTableModel {
     }
 
     @Override
-    public Object getValueAt(int i, int i1) {
-        return null;
+    public Object getValueAt(int row, int col) {
+        Person personObj = data.get(row);
     }
 
     public boolean isCellEditable(int row, int column){

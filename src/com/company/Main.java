@@ -8,36 +8,32 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 public class Main {
-    private static JFrame mainFrame;
-    private static JTable queueTable;
     private static HashMap<String,String> credentials = new HashMap<>();
 
     public static void main(String[] args) {
-        mainFrame = new JFrame("Office Hours Scheduling");
+        JFrame mainFrame = new JFrame("Office Hours Scheduling");
 
         // Implementing Queue using JTables
         String[][] initQueueData = {
                 { "Kundan Kumar Jha", "4031" },
                 { "Anand Jha", "6014" }
         };
-        String[] queueColumnNames = { "Name", "Roll Number"};
-        queueTable = new JTable(initQueueData,queueColumnNames);
+
+        JTable queueTable = new JTable(new QueueTableModel());
         queueTable.setDefaultEditor(Object.class, null);
-        queueTable.setBounds(50, 500, 800, 400);
+        queueTable.setBounds(50, 500, 900, 400);
 
         JScrollPane scrollPane = new JScrollPane(queueTable);
-        scrollPane.setViewportView(queueTable);
+       // scrollPane.setViewportView(queueTable);
 
         // Add Button
         JButton addButton = new JButton("Add Yourself");
         addButton.setBounds(50,100,200,50);
         addButton.addActionListener(actionEvent -> {
             String[] info = getInformation();
-            assert info != null;
-            credentials.put(info[0],info[1]);
+            if (info != null)
+                credentials.put(info[0],info[1]);
             System.out.println(Arrays.toString(info));
-
-
         });
 
         // Remove Button
@@ -70,7 +66,7 @@ public class Main {
             }
         });
 
-        //mainFrame.add(queueTable);
+        mainFrame.add(queueTable);
         mainFrame.add(scrollPane);
         mainFrame.add(addButton);
         mainFrame.add(removeButton);
@@ -79,6 +75,7 @@ public class Main {
 
         mainFrame.setSize(1000, 1000);
         mainFrame.setLayout(null);
+        mainFrame.setLocationRelativeTo(null);
         mainFrame.setVisible(true);
 
     }
