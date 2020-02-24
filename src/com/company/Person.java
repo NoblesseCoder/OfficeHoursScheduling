@@ -1,18 +1,12 @@
 package com.company;
 
 public class Person {
-    private final int index;
-    private final String email;
     private final String name;
+    private final String email;
 
-    public Person(int index,String email, String name) {
-        this.index = index;
-        this.email = email;
+    public Person(String name,String email) {
         this.name = name;
-    }
-
-    public int getIndex() {
-        return index;
+        this.email = email;
     }
 
     public String getEmail() {

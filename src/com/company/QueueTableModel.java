@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class QueueTableModel extends AbstractTableModel {
-    String[] queueColumnNames = { "Index","Email", "Name"};
+    String[] queueColumnNames = {"Name", "Email"};
     List<Person> queueData = new ArrayList<Person>();
 
     public QueueTableModel(){
-        queueData.add(new Person(1,"abc@gmail.com","abc"));
+        queueData.add(new Person("abc","abc@gmail.com"));
     }
 
     @Override
@@ -31,9 +31,8 @@ public class QueueTableModel extends AbstractTableModel {
     public Object getValueAt(int row, int col) {
         Person personObj = queueData.get(row);
         switch(col){
-            case 0: return personObj.getIndex();
-            case 1: return personObj.getName();
-            case 2: return personObj.getEmail();
+            case 0: return personObj.getName();
+            case 1: return personObj.getEmail();
             default : return null;
         }
 
@@ -44,8 +43,9 @@ public class QueueTableModel extends AbstractTableModel {
     }
 
 
-    public void addData(Person person){
+    public void addRow(Person person){
         queueData.add(person);
+        this.fireTableDataChanged();
     }
 
 
