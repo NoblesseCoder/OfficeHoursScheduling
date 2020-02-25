@@ -20,12 +20,12 @@ public class DisplayGui extends JFrame{
 
         setTitle("Office Hours Scheduling");
         setSize(800,800);
-        setBackground(Color.gray);
+        setBackground(Color.blue);
         topPanel = new JPanel();
         btnPanel = new JPanel();
         topPanel.setLayout(new BorderLayout());
         getContentPane().add(topPanel, BorderLayout.CENTER);
-        getContentPane().add(btnPanel, BorderLayout.SOUTH);
+        getContentPane().add(btnPanel, BorderLayout.NORTH);
         scrollPane = new JScrollPane(queueTable);
         topPanel.add(scrollPane,BorderLayout.CENTER);
 
@@ -37,8 +37,12 @@ public class DisplayGui extends JFrame{
                 credentials.put(info[1],info[2]);
                 Person person = new Person(info[0],info[1],"Active");
                 queueTableModel.addRow(person);
+                JOptionPane.showMessageDialog(null, "Add Successful!");
             }
-            System.out.println(Arrays.toString(info));
+            else {
+                JOptionPane.showMessageDialog(null, "Wrong credentials, Try again!");
+            }
+
         });
 
         // Remove Button
@@ -46,9 +50,17 @@ public class DisplayGui extends JFrame{
         removeButton.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                /* TODO Implement handler for removing user based on the row
-                    selected in table.
-                 */
+                int deleteRowIndex = queueTable.getSelectedRow();
+                String deletePersonEmail = queueTableModel.getValueAt(deleteRowIndex,1).toString();
+                String deletePersonName = queueTableModel.getValueAt(deleteRowIndex,0).toString();
+                String sessionCode = getSessionCode(deletePersonName);
+                if(sessionCode.equals(credentials.get(deletePersonEmail))){
+                    queueTableModel.deleteRow(deleteRowIndex);
+                    JOptionPane.showMessageDialog(null, "Remove Successful!");
+                }
+                else {
+                    JOptionPane.showMessageDialog(null, "Wrong Session code, Try again!");
+                }
             }
         });
 
@@ -98,4 +110,18 @@ public class DisplayGui extends JFrame{
         }
         return null;
     }
+
+    public static String getSessionCode(String name){
+        JPanel pane = new JPanel();
+        pane.setLayout(new GridLayout(0, 2, 2, 2));
+        JTextField sessionCode = new JTextField(5);
+        pane.add(new JLabel(name+" Enter Session Code"));
+        pane.add(sessionCode);
+        int result = JOptionPane.showConfirmDialog(null, pane, "Enter credentials", JOptionPane.OK_CANCEL_OPTION);
+        if (result == JOptionPane.OK_OPTION) {
+            return sessionCode.getText();
+        }
+        return null;
+    }
+
 }

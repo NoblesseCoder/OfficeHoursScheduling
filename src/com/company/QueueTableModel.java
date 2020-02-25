@@ -53,9 +53,9 @@ public class QueueTableModel extends AbstractTableModel {
         this.fireTableDataChanged();
     }
 
-    public void deleteRow(Person person)
+    public void deleteRow(int index)
     {
-        queueData.remove(person);
+        queueData.remove(index);
         this.fireTableDataChanged();
     }
 
