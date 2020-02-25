@@ -35,7 +35,7 @@ public class DisplayGui extends JFrame{
             String[] info = getInformation();
             if (info != null){
                 credentials.put(info[1],info[2]);
-                Person person = new Person(info[0],info[1]);
+                Person person = new Person(info[0],info[1],"Active");
                 queueTableModel.addRow(person);
             }
             System.out.println(Arrays.toString(info));

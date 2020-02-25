@@ -5,15 +5,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class QueueTableModel extends AbstractTableModel {
-    String[] queueColumnNames = {"Name", "Email"};
+    String[] queueColumnNames = {"Name", "Email", "Status"};
     List<Person> queueData = new ArrayList<Person>();
 
     public QueueTableModel(){
-        queueData.add(new Person("PersonA","person_a@gmail.com"));
-        queueData.add(new Person("PersonB","person_b@gmail.com"));
-        queueData.add(new Person("PersonC","person_c@gmail.com"));
-        queueData.add(new Person("PersonD","person_d@gmail.com"));
-        queueData.add(new Person("PersonE","person_e@gmail.com"));
+        queueData.add(new Person("PersonA","person_a@gmail.com","Active"));
+        queueData.add(new Person("PersonB","person_b@gmail.com","Active"));
+        queueData.add(new Person("PersonC","person_c@gmail.com","Active"));
+        queueData.add(new Person("PersonD","person_d@gmail.com","Active"));
+        queueData.add(new Person("PersonE","person_e@gmail.com","Active"));
     }
 
     @Override
@@ -37,6 +37,7 @@ public class QueueTableModel extends AbstractTableModel {
         switch(col){
             case 0: return personObj.getName();
             case 1: return personObj.getEmail();
+            case 2: return personObj.getStatus();
             default : return null;
         }
 
@@ -49,6 +50,12 @@ public class QueueTableModel extends AbstractTableModel {
 
     public void addRow(Person person){
         queueData.add(person);
+        this.fireTableDataChanged();
+    }
+
+    public void deleteRow(Person person)
+    {
+        queueData.remove(person);
         this.fireTableDataChanged();
     }
 
