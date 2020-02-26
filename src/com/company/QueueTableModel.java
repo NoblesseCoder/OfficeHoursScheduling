@@ -55,7 +55,19 @@ public class QueueTableModel extends AbstractTableModel {
 
     public void deleteRow(int index)
     {
-        queueData.remove(index);
+        if (queueData.get(index).getStatus() == "Active" && index < queueData.size() - 1) {
+            for (int i = index + 1; i < queueData.size(); i++) {
+                if (queueData.get(i).getStatus() == "Active") {
+                    queueData.set(index, queueData.get(i));
+                    queueData.remove(i);
+                    break;
+                }
+            }
+        }
+        else {
+            queueData.remove(index);
+        }
+        //queueData.remove(index);
         this.fireTableDataChanged();
     }
 
