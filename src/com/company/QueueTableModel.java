@@ -7,7 +7,7 @@ import java.util.List;
 import static com.company.Main.credentials;
 
 public class QueueTableModel extends AbstractTableModel {
-    String[] queueColumnNames = {"Name", "Email", "Status"};
+    String[] queueColumnNames = {"Name"};
     List<Person> queueData = new ArrayList<>();
 
     public QueueTableModel(){

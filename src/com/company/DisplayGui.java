@@ -3,9 +3,9 @@ package com.company;
 
 import java.awt.*;
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Arrays;
 import java.util.HashMap;
 
 
@@ -29,6 +29,7 @@ public class DisplayGui extends JFrame{
         JScrollPane scrollPane = new JScrollPane(queueTable);
         topPanel.add(scrollPane,BorderLayout.CENTER);
 
+
         JButton addButton = new JButton("Add Yourself");
         JButton removeButton = new JButton("Remove Yourself");
         JButton pauseButton = new JButton("Pause Yourself");
@@ -36,6 +37,10 @@ public class DisplayGui extends JFrame{
         removeButton.setEnabled(false);
         pauseButton.setEnabled(false);
         unPauseButton.setEnabled(false);
+
+        for (int i =0; i<queueTableModel.getColumnCount();i++) {
+            queueTable.setDefaultRenderer(queueTable.getColumnClass(i), new QueueCellRenderer());
+        }
 
 
         // QueueTable EventHandler
@@ -187,3 +192,5 @@ public class DisplayGui extends JFrame{
     }
 
 }
+
+
