@@ -1,16 +1,15 @@
 package com.company;
 
+
 import java.awt.*;
 import javax.swing.*;
-import java.awt.event.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Arrays;
 import java.util.HashMap;
 
 
 public class DisplayGui extends JFrame{
-    private JPanel topPanel;
-    private JPanel btnPanel;
-    private JScrollPane scrollPane;
 
     public DisplayGui(HashMap<String,String> credentials){
 
@@ -18,71 +17,132 @@ public class DisplayGui extends JFrame{
         JTable queueTable = new JTable(queueTableModel);
         queueTable.setDefaultEditor(Object.class, null);
 
+        // Button Panel & Queue Panel
         setTitle("Office Hours Scheduling");
         setSize(800,800);
         setBackground(Color.blue);
-        topPanel = new JPanel();
-        btnPanel = new JPanel();
+        JPanel topPanel = new JPanel();
+        JPanel btnPanel = new JPanel();
         topPanel.setLayout(new BorderLayout());
         getContentPane().add(topPanel, BorderLayout.CENTER);
         getContentPane().add(btnPanel, BorderLayout.NORTH);
-        scrollPane = new JScrollPane(queueTable);
+        JScrollPane scrollPane = new JScrollPane(queueTable);
         topPanel.add(scrollPane,BorderLayout.CENTER);
 
-        // Add Button
         JButton addButton = new JButton("Add Yourself");
+        JButton removeButton = new JButton("Remove Yourself");
+        JButton pauseButton = new JButton("Pause Yourself");
+        JButton unPauseButton = new JButton("Unpause Yourself");
+        removeButton.setEnabled(false);
+        pauseButton.setEnabled(false);
+        unPauseButton.setEnabled(false);
+
+
+        // QueueTable EventHandler
+        queueTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent mouseEvent) {
+                if(mouseEvent.getClickCount()>=1){
+                    removeButton.setEnabled(true);
+                    if(queueTableModel.getValueAt(queueTable.getSelectedRow(),2).equals("Active"))
+                        pauseButton.setEnabled(true);
+                    else
+                        pauseButton.setEnabled(false);
+                    if(queueTableModel.getValueAt(queueTable.getSelectedRow(),2).equals("Pause"))
+                        unPauseButton.setEnabled(true);
+                    else
+                        unPauseButton.setEnabled(false);
+                }
+                else{
+                    removeButton.setEnabled(false);
+                    pauseButton.setEnabled(false);
+                    unPauseButton.setEnabled(false);
+                }
+            }
+        });
+
+
+        // Add Button Event Handler
         addButton.addActionListener(actionEvent -> {
             String[] info = getInformation();
             if (info != null){
-                credentials.put(info[1],info[2]);
-                Person person = new Person(info[0],info[1],"Active");
-                queueTableModel.addRow(person);
-                JOptionPane.showMessageDialog(null, "Add Successful!");
-            }
-            else {
-                JOptionPane.showMessageDialog(null, "Wrong credentials, Try again!");
-            }
-
-        });
-
-        // Remove Button
-        JButton removeButton = new JButton("Remove Yourself");
-        removeButton.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                int deleteRowIndex = queueTable.getSelectedRow();
-                String deletePersonEmail = queueTableModel.getValueAt(deleteRowIndex,1).toString();
-                String deletePersonName = queueTableModel.getValueAt(deleteRowIndex,0).toString();
-                String sessionCode = getSessionCode(deletePersonName);
-                if(sessionCode.equals(credentials.get(deletePersonEmail))){
-                    queueTableModel.deleteRow(deleteRowIndex);
-                    JOptionPane.showMessageDialog(null, "Remove Successful!");
+                if(info[0].equals("") || info[1].equals("") || info[2].equals("")){
+                    JOptionPane.showMessageDialog(null, "Enter valid credentials, Try again!");
                 }
                 else {
-                    JOptionPane.showMessageDialog(null, "Wrong Session code, Try again!");
+                    if(credentials.containsKey(info[1])){
+                        JOptionPane.showMessageDialog(null, "Duplicate Entry, Try again!");
+                    }
+                    else {
+                        credentials.put(info[1], info[2]);
+                        Person person = new Person(info[0], info[1],"Active");
+                        queueTableModel.addRow(person);
+                        JOptionPane.showMessageDialog(null, "Add Successful!");
+                    }
                 }
             }
         });
 
-        // Pause Button
-        JButton pauseButton = new JButton("Pause Yourself");
-        pauseButton.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                /* TODO Implement handler for pausing user based on the row
-                    selected in table.
-                 */
+        // Remove Button Event Handler
+        removeButton.addActionListener(actionEvent -> {
+            int deleteRowIndex = queueTable.getSelectedRow();
+            String deletePersonEmail = queueTableModel.getValueAt(deleteRowIndex,1).toString();
+            String deletePersonName = queueTableModel.getValueAt(deleteRowIndex,0).toString();
+            String sessionCode = getSessionCode(deletePersonName);
+            if(sessionCode.equals("-1"))
+                return;
+            if(sessionCode.equals(credentials.get(deletePersonEmail))){
+                queueTableModel.deleteRow(deleteRowIndex);
+                JOptionPane.showMessageDialog(null, "Remove Successful!");
+                removeButton.setEnabled(false);
+                pauseButton.setEnabled(false);
+                unPauseButton.setEnabled(false);
             }
+            else {
+                JOptionPane.showMessageDialog(null, "Wrong Session code, Try again!");
+            }
+
         });
 
-        // Unpause button
-        JButton unPauseButton = new JButton("Unpause Yourself");
-        unPauseButton.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                /* TODO Implement handler for Un pausing user based on the row
-                    selected in table.
-                 */
+        // Pause Button Event Handler
+        pauseButton.addActionListener(actionEvent -> {
+            int index = queueTable.getSelectedRow();
+            String pausePersonEmail = queueTableModel.getValueAt(index, 1).toString();
+            String pausePersonName = queueTableModel.getValueAt(index, 0).toString();
+            String sessionCode = getSessionCode(pausePersonName);
+            if(sessionCode.equals("-1"))
+                return;
+            if(sessionCode.equals(credentials.get(pausePersonEmail))) {
+                queueTableModel.pauseRow(index);
+                JOptionPane.showMessageDialog(null,"Pause Successfull");
+                removeButton.setEnabled(false);
+                pauseButton.setEnabled(false);
+                unPauseButton.setEnabled(false);
+            }
+            else {
+                JOptionPane.showMessageDialog(null,"Wrong session password, Try again!");
+            }
+
+        });
+
+        // Unpause button Event Handler
+        unPauseButton.addActionListener(actionEvent -> {
+            int index = queueTable.getSelectedRow();
+            String unPausePersonEmail = queueTableModel.getValueAt(index, 1).toString();
+            String unPausePersonName = queueTableModel.getValueAt(index, 0).toString();
+            String sessionCode = getSessionCode(unPausePersonName);
+            if(sessionCode.equals("-1"))
+                return;
+
+            if(sessionCode.equals(credentials.get(unPausePersonEmail))) {
+                queueTableModel.unPauseRow(index);
+                JOptionPane.showMessageDialog(null,"UnPause Successful");
+                removeButton.setEnabled(false);
+                pauseButton.setEnabled(false);
+                unPauseButton.setEnabled(false);
+            }
+            else {
+                JOptionPane.showMessageDialog(null,"Wrong session password, Try again!");
             }
         });
 
@@ -92,6 +152,7 @@ public class DisplayGui extends JFrame{
         btnPanel.add(unPauseButton);
     }
     public static String[] getInformation(){
+        // Queries input information from the user
 
         JPanel pane = new JPanel();
         pane.setLayout(new GridLayout(0, 2, 2, 2));
@@ -112,6 +173,7 @@ public class DisplayGui extends JFrame{
     }
 
     public static String getSessionCode(String name){
+        // Queries session code from the user
         JPanel pane = new JPanel();
         pane.setLayout(new GridLayout(0, 2, 2, 2));
         JTextField sessionCode = new JTextField(5);
@@ -121,7 +183,7 @@ public class DisplayGui extends JFrame{
         if (result == JOptionPane.OK_OPTION) {
             return sessionCode.getText();
         }
-        return null;
+        return "-1";
     }
 
 }
