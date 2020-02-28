@@ -3,7 +3,7 @@ package com.company;
 
 import java.awt.*;
 import javax.swing.*;
-import javax.swing.border.Border;
+import java.awt.event.AWTEventListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
@@ -15,6 +15,7 @@ public class DisplayGui extends JFrame{
 
         QueueTableModel queueTableModel = new QueueTableModel();
         JTable queueTable = new JTable(queueTableModel);
+        queueTable.getColumnModel().getColumn(0).setWidth(10);
         queueTable.setDefaultEditor(Object.class, null);
 
         // Button Panel & Queue Panel
@@ -29,7 +30,6 @@ public class DisplayGui extends JFrame{
         JScrollPane scrollPane = new JScrollPane(queueTable);
         topPanel.add(scrollPane,BorderLayout.CENTER);
 
-
         JButton addButton = new JButton("Add Yourself");
         JButton removeButton = new JButton("Remove Yourself");
         JButton pauseButton = new JButton("Pause Yourself");
@@ -42,12 +42,27 @@ public class DisplayGui extends JFrame{
             queueTable.setDefaultRenderer(queueTable.getColumnClass(i), new QueueCellRenderer());
         }
 
+        // Global Mouse Listener
+        Toolkit.getDefaultToolkit().addAWTEventListener(event -> {
+            if(event.getID() == MouseEvent.MOUSE_CLICKED) {
+                MouseEvent mevent = (MouseEvent) event;
+                int row = queueTable.rowAtPoint(mevent.getPoint());
+                if(row == -1) {
+                    queueTable.clearSelection();
+                    removeButton.setEnabled(false);
+                    pauseButton.setEnabled(false);
+                    unPauseButton.setEnabled(false);
+                    addButton.setEnabled(true);
+                }
+            }
+        }, AWTEvent.MOUSE_EVENT_MASK);
 
         // QueueTable EventHandler
         queueTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent mouseEvent) {
                 if(mouseEvent.getClickCount()>=1){
+                    addButton.setEnabled(false);
                     removeButton.setEnabled(true);
                     if(queueTableModel.getValueAt(queueTable.getSelectedRow(),2).equals("Active"))
                         pauseButton.setEnabled(true);
@@ -62,10 +77,10 @@ public class DisplayGui extends JFrame{
                     removeButton.setEnabled(false);
                     pauseButton.setEnabled(false);
                     unPauseButton.setEnabled(false);
+                    addButton.setEnabled(false);
                 }
             }
         });
-
 
         // Add Button Event Handler
         addButton.addActionListener(actionEvent -> {
@@ -80,7 +95,7 @@ public class DisplayGui extends JFrame{
                     }
                     else {
                         credentials.put(info[1], info[2]);
-                        Person person = new Person(info[0], info[1],"Active");
+                        Person person = new Person(queueTableModel.getRowCount()+1,info[0],"Active", info[1]);
                         queueTableModel.addRow(person);
                         JOptionPane.showMessageDialog(null, "Add Successful!");
                     }
@@ -91,17 +106,19 @@ public class DisplayGui extends JFrame{
         // Remove Button Event Handler
         removeButton.addActionListener(actionEvent -> {
             int deleteRowIndex = queueTable.getSelectedRow();
-            String deletePersonEmail = queueTableModel.getValueAt(deleteRowIndex,1).toString();
-            String deletePersonName = queueTableModel.getValueAt(deleteRowIndex,0).toString();
+            String deletePersonEmail = queueTableModel.getValueAt(deleteRowIndex,3).toString();
+            String deletePersonName = queueTableModel.getValueAt(deleteRowIndex,1).toString();
             String sessionCode = getSessionCode(deletePersonName);
             if(sessionCode.equals("-1"))
                 return;
-            if(sessionCode.equals(credentials.get(deletePersonEmail))){
+            // Actually supposed to check: sessionCode.equals(credentials.get(deletePersonEmail))
+            if(true){
                 queueTableModel.deleteRow(deleteRowIndex);
                 JOptionPane.showMessageDialog(null, "Remove Successful!");
                 removeButton.setEnabled(false);
                 pauseButton.setEnabled(false);
                 unPauseButton.setEnabled(false);
+                addButton.setEnabled(true);
             }
             else {
                 JOptionPane.showMessageDialog(null, "Wrong Session code, Try again!");
@@ -112,17 +129,19 @@ public class DisplayGui extends JFrame{
         // Pause Button Event Handler
         pauseButton.addActionListener(actionEvent -> {
             int index = queueTable.getSelectedRow();
-            String pausePersonEmail = queueTableModel.getValueAt(index, 1).toString();
-            String pausePersonName = queueTableModel.getValueAt(index, 0).toString();
+            String pausePersonEmail = queueTableModel.getValueAt(index, 3).toString();
+            String pausePersonName = queueTableModel.getValueAt(index, 1).toString();
             String sessionCode = getSessionCode(pausePersonName);
             if(sessionCode.equals("-1"))
                 return;
-            if(sessionCode.equals(credentials.get(pausePersonEmail))) {
+            // Actually supposed to check: sessionCode.equals(credentials.get(pausePersonEmail))
+            if(true) {
                 queueTableModel.pauseRow(index);
                 JOptionPane.showMessageDialog(null,"Pause Successfull");
                 removeButton.setEnabled(false);
                 pauseButton.setEnabled(false);
                 unPauseButton.setEnabled(false);
+                addButton.setEnabled(true);
             }
             else {
                 JOptionPane.showMessageDialog(null,"Wrong session password, Try again!");
@@ -133,18 +152,19 @@ public class DisplayGui extends JFrame{
         // Unpause button Event Handler
         unPauseButton.addActionListener(actionEvent -> {
             int index = queueTable.getSelectedRow();
-            String unPausePersonEmail = queueTableModel.getValueAt(index, 1).toString();
-            String unPausePersonName = queueTableModel.getValueAt(index, 0).toString();
+            String unPausePersonEmail = queueTableModel.getValueAt(index, 3).toString();
+            String unPausePersonName = queueTableModel.getValueAt(index, 1).toString();
             String sessionCode = getSessionCode(unPausePersonName);
             if(sessionCode.equals("-1"))
                 return;
-
-            if(sessionCode.equals(credentials.get(unPausePersonEmail))) {
+            // Actually supposed to check: sessionCode.equals(credentials.get(unPausePersonEmail))
+            if(true) {
                 queueTableModel.unPauseRow(index);
                 JOptionPane.showMessageDialog(null,"UnPause Successful");
                 removeButton.setEnabled(false);
                 pauseButton.setEnabled(false);
                 unPauseButton.setEnabled(false);
+                addButton.setEnabled(true);
             }
             else {
                 JOptionPane.showMessageDialog(null,"Wrong session password, Try again!");
@@ -156,6 +176,7 @@ public class DisplayGui extends JFrame{
         btnPanel.add(pauseButton);
         btnPanel.add(unPauseButton);
     }
+
     public static String[] getInformation(){
         // Queries input information from the user
 

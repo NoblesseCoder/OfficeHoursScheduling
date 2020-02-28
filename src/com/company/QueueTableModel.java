@@ -7,20 +7,15 @@ import java.util.List;
 import static com.company.Main.credentials;
 
 public class QueueTableModel extends AbstractTableModel {
-    String[] queueColumnNames = {"Name"};
+    String[] queueColumnNames = {"Index","Name","Status"};
     List<Person> queueData = new ArrayList<>();
 
     public QueueTableModel(){
-        queueData.add(new Person("PersonA","person_a@gmail.com","Active"));
-        credentials.put("person_a@gmail.com","123");
-        queueData.add(new Person("PersonB","person_b@gmail.com","Active"));
-        credentials.put("person_b@gmail.com","123");
-        queueData.add(new Person("PersonC","person_c@gmail.com","Active"));
-        credentials.put("person_c@gmail.com","123");
-        queueData.add(new Person("PersonD","person_d@gmail.com","Active"));
-        credentials.put("person_d@gmail.com","123");
-        queueData.add(new Person("PersonE","person_e@gmail.com","Active"));
-        credentials.put("person_e@gmail.com","123");
+        int initNumPersons = (int)(Math.random() * ((4 - 1) + 1)) + 1;
+        for(int i=0;i<initNumPersons;i++){
+            queueData.add(new Person(i+1,"Person"+(i+1),"Active","person_"+(i+1)+"@gmail.com"));
+            credentials.put("person_"+(i+1)+"@gmail.com","123");
+        }
     }
 
     @Override
@@ -42,9 +37,10 @@ public class QueueTableModel extends AbstractTableModel {
     public Object getValueAt(int row, int col) {
         Person personObj = queueData.get(row);
         switch(col){
-            case 0: return personObj.getName();
-            case 1: return personObj.getEmail();
+            case 0: return personObj.getIdNum();
+            case 1: return personObj.getName();
             case 2: return personObj.getStatus();
+            case 3: return personObj.getEmail();
             default : return null;
         }
 
@@ -55,13 +51,16 @@ public class QueueTableModel extends AbstractTableModel {
         return false;
     }
 
-
     public void addRow(Person person){
         queueData.add(person);
         this.fireTableDataChanged();
     }
 
     public void deleteRow(int index) {
+        for(int i=index+1;i<queueData.size();i++){
+            int currIdNum = queueData.get(i).getIdNum();
+            queueData.get(i).setIdNum(currIdNum-1);
+        }
         queueData.remove(index);
         this.fireTableDataChanged();
     }
