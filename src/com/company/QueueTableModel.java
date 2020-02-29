@@ -7,13 +7,13 @@ import java.util.List;
 import static com.company.Main.credentials;
 
 public class QueueTableModel extends AbstractTableModel {
-    String[] queueColumnNames = {"Index","Name","Status"};
+    String[] queueColumnNames = {"Queue No.","Name","Status"};
     List<Person> queueData = new ArrayList<>();
 
     public QueueTableModel(){
         int initNumPersons = (int)(Math.random() * ((4 - 1) + 1)) + 1;
         for(int i=0;i<initNumPersons;i++){
-            queueData.add(new Person(i+1,"Person"+(i+1),"Active","person_"+(i+1)+"@gmail.com"));
+            queueData.add(new Person(i+1,"Person"+(i+1),"Unpaused","person_"+(i+1)+"@gmail.com"));
             credentials.put("person_"+(i+1)+"@gmail.com","123");
         }
     }
@@ -67,15 +67,15 @@ public class QueueTableModel extends AbstractTableModel {
 
     public void pauseRow(int index) {
         Person each = queueData.get(index);
-        if(each.getStatus().equals("Active"))
-            each.setStatus("Pause");
+        if(each.getStatus().equals("Unpaused"))
+            each.setStatus("Paused");
         this.fireTableDataChanged();
     }
 
     public void unPauseRow(int index) {
         Person each = queueData.get(index);
-        if (each.getStatus().equals("Pause"))
-            each.setStatus("Active");
+        if (each.getStatus().equals("Paused"))
+            each.setStatus("Unpaused");
         this.fireTableDataChanged();
     }
 

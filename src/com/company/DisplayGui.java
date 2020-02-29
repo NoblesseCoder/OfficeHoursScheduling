@@ -64,11 +64,11 @@ public class DisplayGui extends JFrame{
                 if(mouseEvent.getClickCount()>=1){
                     addButton.setEnabled(false);
                     removeButton.setEnabled(true);
-                    if(queueTableModel.getValueAt(queueTable.getSelectedRow(),2).equals("Active"))
+                    if(queueTableModel.getValueAt(queueTable.getSelectedRow(),2).equals("Unpaused"))
                         pauseButton.setEnabled(true);
                     else
                         pauseButton.setEnabled(false);
-                    if(queueTableModel.getValueAt(queueTable.getSelectedRow(),2).equals("Pause"))
+                    if(queueTableModel.getValueAt(queueTable.getSelectedRow(),2).equals("Paused"))
                         unPauseButton.setEnabled(true);
                     else
                         unPauseButton.setEnabled(false);
@@ -90,12 +90,13 @@ public class DisplayGui extends JFrame{
                     JOptionPane.showMessageDialog(null, "Enter valid credentials, Try again!");
                 }
                 else {
-                    if(credentials.containsKey(info[1])){
+                    // In actual product Use this: credentials.containsKey(info[1])
+                    if(false){
                         JOptionPane.showMessageDialog(null, "Duplicate Entry, Try again!");
                     }
                     else {
                         credentials.put(info[1], info[2]);
-                        Person person = new Person(queueTableModel.getRowCount()+1,info[0],"Active", info[1]);
+                        Person person = new Person(queueTableModel.getRowCount()+1,info[0],"Unpaused", info[1]);
                         queueTableModel.addRow(person);
                         JOptionPane.showMessageDialog(null, "Add Successful!");
                     }
@@ -121,7 +122,7 @@ public class DisplayGui extends JFrame{
                 addButton.setEnabled(true);
             }
             else {
-                JOptionPane.showMessageDialog(null, "Wrong Session code, Try again!");
+                JOptionPane.showMessageDialog(null, "Wrong Session password, Try again!");
             }
 
         });
@@ -137,7 +138,7 @@ public class DisplayGui extends JFrame{
             // Actually supposed to check: sessionCode.equals(credentials.get(pausePersonEmail))
             if(true) {
                 queueTableModel.pauseRow(index);
-                JOptionPane.showMessageDialog(null,"Pause Successfull");
+                JOptionPane.showMessageDialog(null,"Pause Successful");
                 removeButton.setEnabled(false);
                 pauseButton.setEnabled(false);
                 unPauseButton.setEnabled(false);
@@ -160,7 +161,7 @@ public class DisplayGui extends JFrame{
             // Actually supposed to check: sessionCode.equals(credentials.get(unPausePersonEmail))
             if(true) {
                 queueTableModel.unPauseRow(index);
-                JOptionPane.showMessageDialog(null,"UnPause Successful");
+                JOptionPane.showMessageDialog(null,"Unpause Successful");
                 removeButton.setEnabled(false);
                 pauseButton.setEnabled(false);
                 unPauseButton.setEnabled(false);
@@ -203,7 +204,7 @@ public class DisplayGui extends JFrame{
         JPanel pane = new JPanel();
         pane.setLayout(new GridLayout(0, 2, 2, 2));
         JTextField sessionCode = new JTextField(5);
-        pane.add(new JLabel(name+" Enter Session Code"));
+        pane.add(new JLabel(" Enter Session password"));
         pane.add(sessionCode);
         int result = JOptionPane.showConfirmDialog(null, pane, "Enter credentials", JOptionPane.OK_CANCEL_OPTION);
         if (result == JOptionPane.OK_OPTION) {
